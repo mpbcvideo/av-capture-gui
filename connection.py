@@ -5,6 +5,5 @@ def is_connected():
         socket.create_connection(("www.google.com", 80))
         return True
     except:
-        pass
-    return False
+        return False
 
