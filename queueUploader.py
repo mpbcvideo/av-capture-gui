@@ -6,11 +6,15 @@ import connection
 
 queue = Queue()
 s3 = boto3.resource('s3')
-bucket = 'mpbcnodecamtest'
+bucket = #INSERT BUCKET HERE
 inProgress = []
 
 def upload(file_):
-    #try appending the current upload attempts to a list and make it a condition that they are not in that list to be added to the queue
+    '''
+    Attempts to upload a given file, and if upload is successful, it removes the file from fileQueue.txt
+    and writes all the remaining files back. If the upload files it removes the file from the files in 
+    the process of uploading. 
+    '''
     print("Attempting to upload "+file_)
     try:
         s3.meta.client.upload_file(file_, bucket, file_, ExtraArgs={"ContentType": "video/mp4"})
