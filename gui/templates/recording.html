@@ -1,0 +1,147 @@
+{% extends "layout.html" %}
+{% block content %}
+<div id="parentdiv">
+    <div class="outercircle"></div>
+    <div class="innercircle"></div>
+    <div class="centercircle"></div>
+</div>
+<style type="text/css">
+    #parentdiv
+    {
+        position: fixed;
+        width: 0px;
+        height: 0px;
+        background-color: #071a33;
+        border-radius: 160px;
+        padding-left: 24px;
+        margin-left: 50%;
+        margin-top: 200px;
+    }
+
+    .div2
+    {
+        position: absolute;
+        width: 15px;
+        height: 15px;
+        border-radius: 100px;
+        opacity: 1.0;
+    }
+    .centercircle
+    {
+        position: fixed;
+        width: 78px;
+        height: 78px;
+        background: radial-gradient(rgb(255, 255, 255) 6%, #427a9e 25%, #071a33 85%);
+        border-radius: 100px;
+        margin-top: -45px;
+        margin-left: -69px;
+     
+    }
+    .innercircle
+    {
+        position: fixed;
+        width: 343px;
+        height: 343px;
+        background-color: #071a33;
+        border-radius: 200px;
+        margin-top: -172px;
+        margin-left: -196px;
+    }
+    .outercircle
+    {
+        position: fixed;
+        width: 351px;
+        height: 351px;
+        background-color: white;
+        border-radius: 200px;
+        margin-top: -176px;
+        margin-left: -200px;
+        opacity: 0.8;
+    }
+</style>
+<script type="text/javascript">
+    var div = 360 / 32;
+    var parentdiv = document.getElementById('parentdiv');
+    var offsetToParentCenter = parseInt(parentdiv.offsetWidth / 2);  //assumes parent is square
+    var offsetToChildCenter = 20;
+    var totalOffset = offsetToParentCenter - offsetToChildCenter;
+    var pos = 0;
+    var id = setInterval(frame, 10);
+    function frame() {
+        parentdiv.innerHTML = '<div class="outercircle"></div><div class="innercircle"></div><div class="centercircle"></div>';
+        pos ++
+        for (var j = 0; j < 20; ++j)
+        {
+            for (var i = 0; i < 32; ++i)
+            {
+                if ( j % 2 == 0) {
+                    var offset = 0.5 + (0.01 * pos)*(j+1);
+                } else {
+                    var offset = 0 + (0.01 * pos)*(j+1);
+                }
+               var radius = 160 - (18.25 * j) + j**1.79;
+                var childdiv = document.createElement('div');
+                childdiv.className = 'div2';
+                childdiv.style.position = 'absolute';
+                opaque = 1.0 - 0.02*j;
+                childdiv.style.opacity = opaque.toString();
+                if ( j < 12 ) {
+                    var dim = 15 - j;
+                } else {
+                    var dim = 4;
+                }
+                color = Math.round(180 + (75 / 8)*j);
+                childdiv.style.width = dim.toString() + 'px';
+                childdiv.style.height = dim.toString() + 'px';
+                childdiv.style.backgroundColor = 'rgb('+ color.toString() +','+ color.toString() +', 255)';
+                var y = Math.sin((div * (i+offset)) * (Math.PI / 180)) * radius;
+                var x = Math.cos((div * (i+offset)) * (Math.PI / 180)) * radius;
+                childdiv.style.top = (y + totalOffset).toString() + "px";
+                childdiv.style.left = (x + totalOffset).toString() + "px";
+                parentdiv.appendChild(childdiv);
+            }
+         }
+     }
+</script>
+<script>
+    function startTime() {
+        var today = new Date();
+        var h = today.getHours();
+        var m = today.getMinutes();
+        var s = today.getSeconds();
+        m = checkTime(m);
+        s = checkTime(s);
+        document.getElementById('txt').innerHTML = 
+            h + ":" + m + ":" + s;
+    };
+    function checkTime(i) {
+        if (i < 10) {i = "0" + i}; 
+        return i;
+    };
+    function upTime(countTo) {
+        now = new Date();
+        countTo = new Date(countTo);
+        diff = (now-countTo);
+
+        hours = Math.floor((diff%(60*60*1000*24))/(60*60*1000)*1);
+        mins = Math.floor(((dif mkdir A104_V01f%(60*60*1000*24))%(60*60*1000))/(60*1000)*1);
+        secs = Math.floor((((diff%(60*60*1000*24))%(60*60*1000))%(60*1000))/1000*1);
+
+        hours = checkTime(hours);
+        mins = checkTime(mins);
+        secs = checkTime(secs);
+
+        document.getElementById('test').innerHTML = 
+            hours + ":" + mins + ":" + secs;
+
+        clearTimeout(upTime.to);
+        upTime.to=setTimeout(function(){ upTime(countTo); },1000);
+    }
+</script>
+<body onload="startTime(); upTime(Date())">
+<form action="{{ url_for('stop_recording') }}" methods="GET">
+    <button type="submit" name="btn" class="btn" value="stop" style="margin-top: 440px; margin-left: 42.5%">Stop Recording</button>
+</form>
+</body>
+
+{% endblock %}
