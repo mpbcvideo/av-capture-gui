@@ -1,0 +1,83 @@
+{% extends "layout.html" %}
+{% block content %}
+<script type="text/javascript">
+$(document).ready(function() {
+    $(".js-example-basic-single").select2();
+});
+</script>
+<div class="main">
+    <form action="{{ url_for('start_recording') }}" methods="POST, GET">
+        <table style="width:70%; margin-left:auto; margin-right:auto; margin-top: 30px;">
+            <tr>
+                <td style="padding-top: 20px;">
+                    <b>Study:</b>
+                </td>
+                <td style="padding-top: 20px;">
+                    <select name="study" id="study" class="js-example-basic-single" style="width:100%">
+                        {% for s in studies %}
+                            {% if s.name == study %}
+                                <option value="{{ s.name }}" selected="selected">{{ s.name }}</option>
+                            {% else %}
+                                <option value="{{ s.name }}">{{ s.name }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding-top: 20px;">
+                    <b>Site:</b>
+                </td>
+                <td style="padding-top: 20px;">
+                    <select name="site" id="site" class="js-example-basic-single" style="width:100%">
+                        {% for s in sites %}
+                            {% for site_name, site_num in s.name.items() %}
+                                {% if site_num == site %}
+                                    <option value="{{ site_num }}" selected="selected">{{ site_name }}</option>
+                                {% else %}
+                                    <option value="{{ site_num }}">{{ site_name }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding-top: 20px;">
+                    <b>Participant ID:</b>
+                </td>
+                <td style="padding-top: 20px;">
+                    <input type="text" id="participant" name="participant" value="{{ participant }}">
+                    {% if (participant == '' and not first_attempt) %}
+                        <br>
+                        <b style="color: orange; font-size: 10px;"> &#x26a0; Please input a participant ID.</b>
+                    {% endif %}
+                </td>
+            </tr>    
+            <tr>
+                <td style="padding-top: 20px;">
+                    <b>Visit Number:</b>
+                </td>
+                <td style="padding-top: 20px;">
+                    <input type="text" id="visit" name="visit" value="{{ visit }}">
+                    {% if (visit not in visits and not first_attempt) %}
+                        <br>
+                        <b style="color: orange; font-size: 10px;"> &#x26a0; Please enter a 
+                        {% if visit != '' %} valid {% endif %} visit number.</b>
+                    {% endif %}
+                </td>
+            </tr> 
+            <tr style="text-align: right"> <td></td>
+                <td style="padding-top: 20px;">
+                    <button type="submit" name="btn" class="btn recbtn" value="start">Start</button>  
+                    <button type="submit" name="btn" class="btn recbtn" value="test">Test</button> 
+                    <button type="submit" name="btn" class="btn recbtn" value="exit">Exit</button> 
+        </table>        
+        <br>
+        {% if test_complete %}
+            <button type="submit" name="btn" class="btn" value="start" style="float:right;margin-right:15%">Start Recording</button>
+        {% else %}
+        {% endif %}
+    </form>
+</div>
+{% endblock %}

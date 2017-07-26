@@ -1,0 +1,89 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+    <table cellspacing="30" style="color: white; margin-left:15%; margin-right:auto; width: 80%;" >
+        <tr>
+            <td width="35%"><b>Camera:<b></td>
+            <td width="65%" align="center" style="padding-top: 20px;">
+                {% if combined %}
+                    <video 
+                        id="video" 
+                        class="video-js vjs-default-skin vjs-big-play-centered" 
+                        controls preload=auto 
+                        controls ontimeupdate="getCurTime(this)"
+                        width=auto
+                        height=auto 
+                        style="align:center;">
+                        <source 
+                            src="{{ url_for('static',filename='tmp/combined.webm') }}" 
+                            type="video/webm"/>
+                    </video>
+                {% elif webcam %}
+                    <video 
+                        id="video" 
+                        class="video-js vjs-default-skin vjs-big-play-centered" 
+                        controls preload=auto 
+                        controls ontimeupdate="getCurTime(this)"
+                        width=auto
+                        height=auto 
+                        style="align:center;">
+                        <source 
+                            src="{{ url_for('static',filename='tmp/webcam.webm') }}" 
+                            type="video/webm"/>                 
+                {% else %}
+                    <b style="color: orange;"> &#x26a0; Please check connection.<b/>
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td><b>Participant Microphone:<b></td>
+            <td width="65%" align="center" style="padding-top: 20px;">
+                {% if shotgun %}
+                    <audio controls>
+                        <source 
+                            src="{{ url_for('static',filename='tmp/shotgun.wav') }}"
+                            type="audio/wav"/>
+                    </audio>
+                {% else %}
+                    <b style="color: orange;"> &#x26a0; Please check connection.<b/>
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td><b>Omnidirectional Microphone:<b></td>
+            <td width="65%" align="center" style="padding-top: 20px;">
+                {% if omni %}
+                    <audio controls>
+                        <source 
+                            src="{{ url_for('static',filename='tmp/omni.wav') }}"
+                            type="audio/wav"/>
+                    </audio>
+                {% else %}
+                    <b style="color: orange;"> &#x26a0; Please check connection.<b/>
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td><b>Lapel Microphone:<b></td>
+            <td width="65%" align="center" style="padding-top: 20px;">
+                {% if lapel %}
+                    <audio controls>
+                        <source 
+                            src="{{ url_for('static',filename='tmp/lapel.wav') }}"
+                            type="audio/wav"/>
+                    </audio>
+                {% else %}
+                    <b style="color: orange;"> &#x26a0; Please check connection.<b/>
+                {% endif %}
+            </td>
+        </tr>
+     </table>
+     <div style="margin-top: 30px">
+     <form style="display:inline; margin-left: 500px;" action="{{ url_for('start') }}" methods="GET">
+        <button type="submit" name="btn" class="btn recbtn" value="back">Back</button>
+        <button type="submit" name="btn" class="btn recbtn" value="test">Retest</button>
+        <button type="submit" name="btn" class="btn recbtn" value="start">Start</button>
+     </form>
+     </div>
+{% endblock %}

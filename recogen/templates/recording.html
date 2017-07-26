@@ -1,0 +1,233 @@
+{% extends "layout.html" %}
+{% block content %}
+<div id="parentdiv">
+    <div class="outercircle"></div>
+    <div class="innercircle"></div>
+    <div class="centercircle"></div>
+</div>
+<style type="text/css">
+    #parentdiv
+    {
+        position: fixed;
+        width: 0px;
+        height: 0px;
+        background-color: #071a33;
+        border-radius: 160px;
+        padding-left: 24px;
+        margin-left: 50%;
+        margin-top: 250px;
+    }
+
+    .div2
+    {
+        position: absolute;
+        filter: blur(1px);
+        width: 15px;
+        height: 15px;
+        border-radius: 100px;
+        opacity: 1.0;
+    }
+    .centercircle
+    {
+        position: fixed;
+        width: 78px;
+        height: 78px;
+        background: radial-gradient(rgb(255, 255, 255) 6%, #427a9e 25%, #071a33 85%);
+        border-radius: 100px;
+        margin-top: -45px;
+        margin-left: -69px;
+     
+    }
+    .innercircle
+    {
+        position: fixed;
+        width: 343px;
+        height: 343px;
+        background-color: #071a33;
+        filter: blur(1px);
+        border-radius: 200px;
+        margin-top: -172px;
+        margin-left: -196px;
+    }
+    .outercircle
+    {
+        position: fixed;
+        width: 351px;
+        height: 351px;
+        background-color: white;
+        filter: blur(1px);
+        border-radius: 200px;
+        margin-top: -176px;
+        margin-left: -200px;
+        opacity: 0.8;
+    }
+</style>
+<script type="text/javascript">
+    var div = 360 / 32;
+    var parentdiv = document.getElementById('parentdiv');
+    var offsetToParentCenter = parseInt(parentdiv.offsetWidth / 2);  //assumes parent is square
+    var offsetToChildCenter = 20;
+    var totalOffset = offsetToParentCenter - offsetToChildCenter;
+    var pos = 0;
+    var id = setInterval(frame, 1);
+    function frame() {
+        parentdiv.innerHTML = '<div class="outercircle"></div><div class="innercircle"></div><div class="centercircle"></div>';
+        pos ++
+        for (var j = 0; j < 20; ++j)
+        {
+            for (var i = 0; i < 32; ++i)
+            {
+                if ( j % 2 == 0) {
+                    var x_offset = 0.5 + (0.007 * pos)*(j+1);
+                } else {
+                    var x_offset = 0 + (0.007 * pos)*(j+1);
+                }
+                var y_offset = x_offset;
+                var radius = 160 - (18.25 * j) + j**1.79 ;
+                var childdiv = document.createElement('div');
+                childdiv.className = 'div2';
+                childdiv.style.position = 'absolute';
+                opaque = 1.0 - 0.02*j;
+                childdiv.style.opacity = opaque.toString();
+                if ( j < 12 ) {
+                    var dim = 15 - j;
+                } else {
+                    var dim = 4;
+                }
+                color = Math.round(180 + (75 / 8)*j);
+                childdiv.style.width = dim.toString() + 'px';
+                childdiv.style.height = dim.toString() + 'px';
+                childdiv.style.backgroundColor = 'rgb('+ color.toString() +','+ color.toString() +', 255)';
+                var y = Math.sin((div * (i+y_offset)) * (Math.PI / 180)) * radius;
+                var x = Math.cos((div * (i+x_offset)) * (Math.PI / 180)) * radius;
+                childdiv.style.top = (y + totalOffset).toString() + "px";
+                childdiv.style.left = (x + totalOffset).toString() + "px";
+                parentdiv.appendChild(childdiv);
+            }
+         }
+     }
+</script>
+<script>
+    function startTime() {
+        var today = new Date();
+        var h = today.getHours();
+        var m = today.getMinutes();
+        var s = today.getSeconds();
+        m = checkTime(m);
+        s = checkTime(s);
+        document.getElementById('txt').innerHTML = 
+            h + ":" + m + ":" + s;
+    };
+    function checkTime(i) {
+        if (i < 10) {i = "0" + i}; 
+        return i;
+    };
+    function upTime(countTo) {
+        now = new Date();
+        countTo = new Date(countTo);
+        diff = (now-countTo);
+
+        hours = Math.floor((diff%(60*60*1000*24))/(60*60*1000)*1);
+        mins = Math.floor(((diff%(60*60*1000*24))%(60*60*1000))/(60*1000)*1);
+        secs = Math.floor((((diff%(60*60*1000*24))%(60*60*1000))%(60*1000))/1000*1);
+
+        hours = checkTime(hours);
+        mins = checkTime(mins);
+        secs = checkTime(secs);
+
+        document.getElementById('test').innerHTML = 
+            hours + ":" + mins + ":" + secs;
+
+        clearTimeout(upTime.to);
+        upTime.to=setTimeout(function(){ upTime(countTo); },1000);
+    }
+</script>
+
+<body onload="startTime(); upTime(Date())">
+<h1 style="text-align: center;"><b style="color:#ecf5ff">RECORDING IN PROGRESS</b></h1>
+
+
+
+<div style="margin-top: 400px; width: 50%; left: 25%; right: 25%; color: #ecf5ff; position: fixed">
+<table style="width: 100%">
+<tr>
+<td>Started at:</td>
+<td><div id='txt' style="display: inline-block"></div>
+</td>
+<td rowspan="2" style="text-align: right;"><button class="btn recbtn confirm-cancel">Cancel</button><form style="display:inline" action="{{ url_for('stop_recording') }}" methods="GET"><button type="submit" name="btn" class="btn recbtn" value="stop">Stop</button></form></td>
+</tr>
+<td>Time elapsed:</td>
+<td><div id='test' style="display: inline-block"></div></td>
+</table>
+<script type="text/javascript">
+    $('.confirm-cancel').on('click', function () {
+        $.confirm({
+            title: 'Do you want to cancel?',
+            content: 'Cancelling this recording can potentially result in the loss of valuable data.',
+            icon: 'fa fa-question-circle',
+            theme: 'material',
+            closeIcon: true,
+            animation: 'scale',
+            closeAnimation: 'scale',
+            type: 'blue',
+            opacity: 0.5,
+            buttons: {
+                'yes': {
+                    text: 'Yes',
+                    btnClass: 'btn-blue',
+                    action: function () {
+                        $.confirm({
+                            title: 'Are you sure?',
+                            content: 'Clicking <strong>yes</strong> will delete the current recording.',
+                            icon: 'fa fa-warning',
+                            theme: 'material',
+                            animation: 'scale',
+                            closeAnimation: 'zoom',
+                            type: 'orange',
+                            buttons: {
+                                confirm: {
+                                    text: 'Yes',
+                                    btnClass: 'btn-blue',
+                                    action: function () {
+                                        $.confirm({
+                                            title: 'Recording deleted',
+                                            content: 'The current recording has been successfully erased.',
+                                            icon: 'fa fa-exclamation',
+                                            theme: 'material',
+                                            animation: 'scale',
+                                            closeAnimation: 'zoom',
+                                            type: 'red',
+                                            buttons: {
+                                                confirm: {
+                                                    text: 'Ok',
+                                                    btnClass: 'btn-blue',
+                                                    action: function () {
+                                                        location.href = '{{ url_for('stop_recording') }}'
+                                                    }
+                                               },
+                                            }
+                                        });
+                                        ;
+                                    }
+                                    
+                                },
+                                cancel: function () {
+                                    $.alert('you clicked on <strong>cancel</strong>');
+                                }
+                            }
+                        });
+                    }
+                },
+                'no': function () {
+                    text: 'No'
+                },
+            }
+        });
+    });
+</script>
+</div>
+<div style="float: right; margin-top:360px; right: 5%; position: fixed">
+</div>
+</body>
+
+{% endblock %}

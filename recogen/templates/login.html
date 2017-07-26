@@ -1,0 +1,70 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="main">
+    <table>
+        <tr>
+            <td>Camera:</td>
+            <td>
+                {% if webcam_path != '' %}
+                    <video 
+                        id="video" 
+                        class="video-js vjs-default-skin vjs-big-play-centered" 
+                        controls preload=auto 
+                        controls ontimeupdate="getCurTime(this)"
+                        width=640 
+                        height=360 
+                        style="align:center;">
+                        <source 
+                            src="{{ vid_path }}" 
+                            type="video/mp4"/>
+                    </video>
+                {% else %}
+                    <b style="color: orange;"> &#x26a0; Please check connection.<b/>
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td>Participant Microphone:</td>
+            <td>
+                {% if shotgun_path != '' %}
+                    <audio controls>
+                        <source 
+                            src="{{ shotgun_path }}"
+                            type="audio/mpeg"/>
+                    </audio>
+                {% else %}
+                    <b style="color: orange;"> &#x26a0; Please check connection.<b/>
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td>Omnidirectional Microphone:</td>
+            <td>
+                {% if omni_path != '' %}
+                    <audio controls>
+                        <source 
+                            src="{{ omni_path }}"
+                            type="audio/mpeg"/>
+                    </audio>
+                {% else %}
+                    <b style="color: orange;"> &#x26a0; Please check connection.<b/>
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td>Lapel Microphone:</td>
+            <td>
+                {% if lapel_path != '' %}
+                    <audio controls>
+                        <source 
+                            src="{{ lapel_path }}"
+                            type="audio/mpeg"/>
+                    </audio>
+                {% else %}
+                    <b style="color: orange;"> &#x26a0; Please check connection.<b/>
+                {% endif %}
+            </td>
+        </tr>
+{% endblock %}

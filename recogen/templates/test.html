@@ -1,0 +1,34 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<style type="text/css">
+@keyframes blink {50% { color: transparent }}
+.loader__dot { animation: 3s blink infinite }
+.loader__dot:nth-child(2) { animation-delay: 250ms }
+.loader__dot:nth-child(3) { animation-delay: 500ms }
+</style>
+<script>
+    function wait_for_test()
+    {
+        setTimeout(function(){
+            window.location.href = "{{ url_for('test_results') }}"; 
+        }, 60000);
+        
+    }
+    var count = 59, timer = setInterval(function() {
+        var n = count--;
+        var s = n.toString();
+        $("#counter").html(s+' ');
+        if(count == 1) clearInterval(timer);
+    }, 1000);
+</script>
+<body onload="wait_for_test()">
+    <div style="color: white; text-align: center; margin-top: 10%">
+        <h1> Testing Equipment </h1>
+        <div class="loader" style="color: #9dcfff; font-size: 96px; margin-top: 10%;"><span class="loader__dot">.</span><span class="loader__dot">.</span><span class="loader__dot">.</span></div>
+        <p style="display: inline-block; margin-top: 20%"> This will only take 
+        <div style="display: inline-block; padding-left: 4px" id="counter">60</div>
+        seconds </p>
+</body>
+
+{% endblock %}
